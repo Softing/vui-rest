@@ -1,0 +1,30 @@
+{
+  "name": "@softing/vui-rest",
+  "version": "1.0.0",
+  "description": "VUI Rest package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Softing/vui-rest.git"
+  },
+  "author": "Softing LLC",
+  "license": "Apache License 2.0",
+  "bugs": {
+    "url": "https://github.com/Softing/vui-rest/issues"
+  },
+  "homepage": "https://github.com/Softing/vui-rest#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.3.1",
+    "eslint-plugin-vue": "^6.2.2"
+  },
+  "dependencies": {
+    "axios": "^0.19.2"
+  }
+}
