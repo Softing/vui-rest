@@ -25,6 +25,7 @@ jobs:
         scope: '@softing'
     - name: Build
       run: |
+        yarn install
         ./node_modules/.bin/babel src --out-dir lib
     - name: Create version
       run: |
