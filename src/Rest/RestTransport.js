@@ -34,20 +34,40 @@ export default class RestTransport {
   }
 
   call(data = {}, headers = {}, options = {}) {
-    const response = new RestResponse()
-    const request = Object.assign(
-      {
-        url: this.gw(),
-        headers: headers,
-        data :data,
-        method: this.requestMethod,
-        timeout: this.requestTimeout
-      }, options)
 
+    // Create requestParams object
+    const requestParams = {
+      url: this.gw(),
+      headers: headers,
+      data :data,
+      method: this.requestMethod,
+      timeout: this.requestTimeout
+    }
+
+    // Setup data or params
+    if (this.requestMethod.toLowerCase() === 'get') {
+      Object.assign(requestParams, {
+        params: data
+      })
+    }
+    else {
+      Object.assign(requestParams, {
+        data: data
+      })
+    }
+
+    // Create request object
+    const request = Object.assign(requestParams, options)
+
+    // Setup authirization
     if (this.token) {
       request.headers['Authorization'] = `Bearer ${this.token}`
     }
 
+    // Create response object
+    const response = new RestResponse()
+
+    // Return Axios promise
     return new Promise((resolve, reject) => {
       Axios
         .request(request)

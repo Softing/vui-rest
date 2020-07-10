@@ -18,20 +18,42 @@ export class RestResponse {
   }
 
   addError (err) {
-    this.errors.add(new RestError(err))
+    if (err.response?.data?.errors) {
+      const errors = err.response.data.errors
+      for (const field in errors) {
+        errors[field].forEach((error) => {
+          this.errors.add(new RestError({
+            field: field,
+            message: error,
+            status: err.response.status
+          }));
+        })
+      }
+    } else {
+      this.errors.add(new RestError(err));
+    }
+
     return this
   }
 
-  getError () {
-    return this.errors.getError()
+  getError (field = null) {
+    return this.errors.getError(field)
   }
 
-  getErrors () {
-    return this.errors.getErrors()
+  getErrors (field = null) {
+    return this.errors.getErrors(field)
   }
 
-  hasError () {
+  getAllErrors () {
+    return this.errors.getAllErrors()
+  }
+
+  hasErrors () {
     return this.errors.hasErrors()
+  }
+
+  hasError (field = null) {
+    return this.errors.hasErrors(field)
   }
 
   getResponse () {
