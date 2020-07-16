@@ -1,6 +1,6 @@
 {
   "name": "@softing/vui-rest",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "VUI Rest package",
   "main": "index.js",
   "scripts": {
