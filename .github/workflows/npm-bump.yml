@@ -23,16 +23,16 @@ jobs:
         node-version: 12
         registry-url: 'https://npm.pkg.github.com'
         scope: '@softing'
-    - name: Build
-      run: |
-        yarn install
-        ./node_modules/.bin/babel src --out-dir lib
-    - name: Create version
-      run: |
-        npm version patch
-        git push
-        git push --tags
-    - name: Publish package
-      run: npm publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #- name: Build
+    #  run: |
+    #    yarn install
+    #    ./node_modules/.bin/babel src --out-dir lib
+    #- name: Create version
+    #  run: |
+    #    npm version patch
+    #    git push
+    #    git push --tags
+    #- name: Publish package
+    #  run: npm publish
+    #  env:
+    #    NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
