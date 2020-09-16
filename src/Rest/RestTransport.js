@@ -1,38 +1,24 @@
 import Axios from 'axios'
 import RestResponse from './RestResponse'
 
-export const Gateways = {
-  Ecommerce: 'eapi',
-  Seller: 'sapi',
-  Manager: 'mapi',
-  Frontend: 'frontend'
+export const RestMethods = {
+  Get: 'get',
+    Post: 'post',
+    Patch: 'patch',
+    Delete: 'delete'
 }
 
-export default class RestTransport {
+export class RestTransport {
 
   url = null
   token = null
-  gateway = Gateways.Ecommerce
-  requestMethod = 'post'
+
+  requestMethod = null
   requestTimeout = 30 * 1000
 
-  constructor(url, requestMethod = 'post', apiGateway = Gateways.Ecommerce) {
+  constructor(url, requestMethod = RestMethods.Post) {
     this.requestMethod = requestMethod
-    this.gateway = apiGateway
     this.url = url
-  }
-
-  gw() {
-    switch (this.gateway) {
-      case Gateways.Ecommerce:
-        return process.env.VUE_APP_API_ECOMMERCE_URL + this.url
-      case Gateways.Seller:
-        return process.env.VUE_APP_API_SELLER_URL + this.url
-      case Gateways.Manager:
-        return process.env.VUE_APP_API_MANAGER_URL + this.url
-      case Gateways.Frontend:
-        return process.env.VUE_APP_API_FRONTEND_URL + this.url
-    }
   }
 
   auth(token) {
@@ -43,7 +29,7 @@ export default class RestTransport {
 
     // Create requestParams object
     const requestParams = {
-      url: this.gw(),
+      url: this.url,
       headers: headers,
       data :data,
       method: this.requestMethod,

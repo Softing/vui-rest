@@ -74,11 +74,6 @@ export default class RestAction {
     return errors;
   }
 
-  // Transport
-
-  createTransport(url, method, gw) {
-    return new RestTransport(url, method, gw);
-  }
 
   /**
    * Create request
