@@ -1,8 +1,10 @@
 import Axios from 'axios'
-import {RestResponse} from './RestResponse'
+import RestResponse from './RestResponse'
 
 export const Gateways = {
-  Ecommerce: 'ecommerce',
+  Ecommerce: 'eapi',
+  Seller: 'sapi',
+  Manager: 'mapi',
   Frontend: 'frontend'
 }
 
@@ -14,7 +16,7 @@ export default class RestTransport {
   requestMethod = 'post'
   requestTimeout = 30 * 1000
 
-  constructor(url, requestMethod = 'post', apiGateway = 'ecommerce') {
+  constructor(url, requestMethod = 'post', apiGateway = Gateways.Ecommerce) {
     this.requestMethod = requestMethod
     this.gateway = apiGateway
     this.url = url
@@ -24,6 +26,10 @@ export default class RestTransport {
     switch (this.gateway) {
       case Gateways.Ecommerce:
         return process.env.VUE_APP_API_ECOMMERCE_URL + this.url
+      case Gateways.Seller:
+        return process.env.VUE_APP_API_SELLER_URL + this.url
+      case Gateways.Manager:
+        return process.env.VUE_APP_API_MANAGER_URL + this.url
       case Gateways.Frontend:
         return process.env.VUE_APP_API_FRONTEND_URL + this.url
     }

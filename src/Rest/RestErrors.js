@@ -1,4 +1,4 @@
-export class RestErrors {
+export default class RestErrors {
     errors = []
 
     /**

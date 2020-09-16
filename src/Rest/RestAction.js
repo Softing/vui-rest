@@ -1,9 +1,9 @@
-import {Gateways} from "./RestGateway";
+import RestTransport from "@softing/vui-rest/src/Rest/RestTransport";
 
 export default class RestAction {
-  store = null
-  i18n = null
-  requestParams = {}
+
+  #store = null
+  #i18n = null
 
   constructor(store, i18n) {
     this.store = store
@@ -52,25 +52,44 @@ export default class RestAction {
     return !!this.paramsTransformer
   }
 
+  getParams(params) {
+    if (this.hasParamsTransformer()) {
+      params = this.getParamsTransformer().transform(params);
+    }
+    params = this.transformParams(params)
+    return params;
+  }
+
+  // Live transformers
+
+  transformParams(params) {
+    return params;
+  }
+
+  transformResult(result) {
+    return result;
+  }
+
+  transformErrors(errors) {
+    return errors;
+  }
+
+  // Transport
+
+  createTransport(url, method, gw) {
+    return new RestTransport(url, method, gw);
+  }
 
   /**
-   * Send request
+   * Create request
    * @param {RestTransport} transport
    * @param {Object} params
    */
-  sendRequest(transport, params) {
+  createRequest(transport, params) {
+    this.onBeforeRequest(transport, params)
     return new Promise((resolve, reject) => {
-
-      this.requestParams = params
-
-      if (this.hasParamsTransformer()) {
-        this.requestParams = this.getParamsTransformer().transform(this.requestParams)
-      }
-
-      this.onBeforeRequest()
-
+      const requestParams = this.getParams(params)
       transport.auth(this.store.getters['auth/token'])
-
       transport.call(this.requestParams)
         .then((response) => {
           this.handle(response)
@@ -86,9 +105,17 @@ export default class RestAction {
     })
   }
 
+  /**
+   * Send request
+   * @param {Object} payload
+   */
+  send(payload = null) {
+    console.debug('This method must be redefined')
+  }
+
   // Events
 
-  onBeforeRequest() {
+  onBeforeRequest(transport, params) {
   }
 
   onAfterRequest() {
@@ -118,9 +145,13 @@ export default class RestAction {
       result = this.getResultTransformer().transform(result)
     }
 
+    result = this.transformResult(result)
+
     if (this.hasErrorTransformer()) {
       errors = this.getErrorsTransformer().transform(errors)
     }
+
+    errors = this.transformErrors(errors)
 
     if (errors.hasErrors()) {
       this.onError(errors, result)

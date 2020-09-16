@@ -1,4 +1,4 @@
-export class RestError {
+export default class RestError {
   status = null
   message = null
   data = null

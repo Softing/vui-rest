@@ -1,19 +1,22 @@
-import { RestError } from './RestError'
-import { RestErrors } from './RestErrors'
-import { RestResult } from './RestResult'
+import RestError from './RestError'
+import RestErrors from './RestErrors'
 
-export class RestResponse {
+export default class RestResponse {
 
-  result = {}
+  status = null
   errors = []
 
   constructor () {
-    this.result = new RestResult()
     this.errors = new RestErrors()
   }
 
   set (response) {
-    this.result.setResult(response)
+    this.config= response.config
+    this.data= response.data
+    this.headers= response.headers
+    this.request= response.request
+    this.status= response.status
+    this.statusText= response.statusText
     return this
   }
 
@@ -56,10 +59,4 @@ export class RestResponse {
     return this.errors.hasErrors(field)
   }
 
-  getResponse () {
-    return {
-      result: this.result,
-      errors: this.errors
-    }
-  }
 }

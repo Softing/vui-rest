@@ -1,11 +1,3 @@
-import Axios from 'axios'
-import {RestResponse} from './RestResponse'
-
-// export const Gateways = {
-//   Ecommerce: 'ecommerce',
-//   Frontend: 'frontend'
-// }
-
 export default class RestGateway {
 
   store = null
@@ -14,6 +6,19 @@ export default class RestGateway {
   constructor(store, i18n) {
     this.store = store
     this.i18n = i18n
+  }
+
+  createAction(Clazz) {
+    return new Clazz(this.store, this.i18n)
+  }
+
+  callAction(Clazz, payload) {
+    const action = this.createAction(Clazz)
+    if (typeof action['send'] === 'function') {
+      return action.send(payload)
+    } else {
+      console.error('Action without send method')
+    }
   }
 
 }
