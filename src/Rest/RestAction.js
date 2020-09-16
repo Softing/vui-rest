@@ -71,9 +71,17 @@ export default class RestAction {
   }
 
   transformErrors(errors) {
-    return errors;
+    if (errors && errors.errors) {
+      for (let i = 0; i < errors.errors.length; i++) {
+        errors.errors[i] = this.transformError(errors.errors[i])
+      }
+    }
+    return errors
   }
 
+  transformError(errors) {
+    return errors;
+  }
 
   /**
    * Create request
@@ -81,11 +89,11 @@ export default class RestAction {
    * @param {Object} params
    */
   createRequest(transport, params) {
-    this.onBeforeRequest(transport, params)
+    this.onBeforeRequest(params, transport)
     return new Promise((resolve, reject) => {
       const requestParams = this.getParams(params)
       transport.auth(this.store.getters['auth/token'])
-      transport.call(this.requestParams)
+      transport.call(requestParams)
         .then((response) => {
           this.handle(response)
           resolve(response)
@@ -110,7 +118,7 @@ export default class RestAction {
 
   // Events
 
-  onBeforeRequest(transport, params) {
+  onBeforeRequest(params, transport) {
   }
 
   onAfterRequest() {
@@ -125,33 +133,33 @@ export default class RestAction {
 
   /**
    * @param {RestResult} result
-   * @param {RestErrors} errors
    */
-  onSuccess(result, errors) {
+  onSuccess(result) {
   }
 
   /**
-   * @param {RestResult} result
-   * @param {RestErrors} errors
+   * @param {RestResponse} response
    */
-  handle({result, errors}) {
+  handle(response) {
 
     if (this.hasResultTransformer()) {
-      result = this.getResultTransformer().transform(result)
+      response = this.getResultTransformer().transform(response)
     }
 
-    result = this.transformResult(result)
+    response = this.transformResult(response)
 
-    if (this.hasErrorTransformer()) {
-      errors = this.getErrorsTransformer().transform(errors)
-    }
+    if (response.errors && response.errors.hasErrors()) {
 
-    errors = this.transformErrors(errors)
+      if (this.hasErrorTransformer()) {
+        response.errors = this.getErrorsTransformer().transform(response.errors)
+      }
 
-    if (errors.hasErrors()) {
-      this.onError(errors, result)
+      response.errors = this.transformErrors(response.errors)
+
+      this.onError(response.errors, response)
+
     } else {
-      this.onSuccess(result, errors)
+      this.onSuccess(response)
     }
 
   }
